@@ -93,7 +93,7 @@ export class Context {
 	get method() { return this.req.method; }
 
 	response() {
-		this.res.headers['Content-Type'] = typeof this.res._body === 'object' ? 'application/json' : 'text/plain';
-		return new Response(typeof this.res._body === 'object' ? JSON.stringify(this.res._body) : this.res._body, {status: this.res.status, headers: this.res.headers, statusText: this.res.statusText});
+		this.res.headers['Content-Type'] = typeof this.res.body === 'object' ? 'application/json' : 'text/plain';
+		return new Response(typeof this.res.body === 'object' ? JSON.stringify(this.res.body) : this.res.body, {status: this.res.status, headers: this.res.headers, statusText: this.res.statusText});
 	}
 }
