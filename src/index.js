@@ -86,7 +86,7 @@ export class Context {
 		this.env = env;
 		this.ctx = ctx;
         this.params = {};
-        this.res = {_body: {}, status: 200, statusText: 'OK', headers: {}};
+        this.res = {body: {}, status: 200, statusText: 'OK', headers: {}};
 	}
 
 	get path() { return new URL(this.req.url).pathname;}
