@@ -1,0 +1,14 @@
+{
+  "name": "my-package",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+} 
