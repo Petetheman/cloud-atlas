@@ -23,13 +23,13 @@ export class CloudAtlas {
 		return this._set(route.group, route, route.mw);
 	}
 
-    catchAny(method) {
-        (this.current_route || this.current_group).error.push({ method});
+    catchAny(error, method) {
+        (this.current_route || this.current_group).error.push({ error, method});
         return this;
     }
 
 	catch(error, status, message) {
-        this.catchAny(async (ex, con) => {if (ex instanceof error) con.res = {...con.res, status: status, body: message, statusText: message};});
+        this.catchAny(error, async (ex, con) => {if (ex instanceof error) con.res = {...con.res, status: status, body: message, statusText: message};});
 		return this;
 	}
 
@@ -54,7 +54,7 @@ export class CloudAtlas {
 		} catch (err) {
 			const handler = [...route.error, ...route.group.error].find(h => err instanceof h.error);
 			if (!handler) throw err
-            con.res = {...con.res, status: handler.status, body: handler.message+' - '+err.message, statusText: handler.message};
+            await handler.method(err, con);
 		} finally {
             await this.compose(route.group.amw)(con);			
 		}
@@ -63,17 +63,12 @@ export class CloudAtlas {
 
 	matches(route, con) {
 		const [reqParts, routeParts] = [con.path, route.path].map(p => p.split('/').filter(Boolean));
-		
 		if (con.method !== route.method || reqParts.length !== routeParts.length) return false;
-		
-		con.params = routeParts.reduce((acc, p, i) => {if (p.startsWith(':')) acc[p.slice(1)] = reqParts[i];return p.startsWith(':') || p === reqParts[i] ? acc : null;},{});
-		
-		return !!con.params;
+		con.params = routeParts.reduce((acc, p, i) => {if (p.startsWith(':')) {acc[p.slice(1)] = reqParts[i]; return acc;} return p === reqParts[i] ? acc : null;}, {});
+		return !!con.params; // Convert to boolean (null becomes false)
 	}
 
-	compose(middlewares) {
-		return ctx => middlewares.reduceRight((next, mw) => async () => mw(ctx, next), () => Promise.resolve())();
-	}
+	compose(middlewares) {return async (ctx) => {middlewares.reduceRight((next, mw) => async () => mw(ctx, next), () => Promise.resolve())()}}
 }
 
 ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS', 'HEAD'].forEach(method => {CloudAtlas.prototype['on' + method] = function(path) {return this.on(method, path);};});
