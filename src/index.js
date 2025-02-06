@@ -65,7 +65,16 @@ export class CloudAtlas {
 		return !!con.params; // Convert to boolean (null becomes false)
 	}
 
-	compose(middlewares) {return async (ctx) => {middlewares.reduceRight((next, mw) => async () => mw(ctx, next), () => Promise.resolve())()}}
+	compose(middlewares) {
+		return async (ctx) => {
+			const dispatch = async (index) => {
+				if (index >= middlewares.length) return;
+				const middleware = middlewares[index];
+				await middleware(ctx, () => dispatch(index + 1));
+			};
+			await dispatch(0);
+		};
+	}
 }
 
 ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS', 'HEAD'].forEach(method => {CloudAtlas.prototype['on' + method] = function(path) {return this.on(method, path);};});
