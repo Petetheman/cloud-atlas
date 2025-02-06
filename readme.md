@@ -18,6 +18,8 @@ npm install cloud-atlas@git+https://github.com/petetheman/cloud-atlas.git#main
 ## Basic Usage
 ```javascript
 import { CloudAtlas, Context } from 'cloud-atlas';
+import { ... } from './middleware.js';
+import { ... } from './exceptions.js';
 
 const app = new CloudAtlas();
 
