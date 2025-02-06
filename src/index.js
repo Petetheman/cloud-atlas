@@ -23,9 +23,8 @@ export class CloudAtlas {
 		return this._set(route.group, route, route.mw);
 	}
 
-	onError(error, status, message) {
-		if (this.current_route) this.current_route.error.push({ error, status, message });
-		else if (this.current_group) this.current_group.error.push({ error, status, message });
+	catch(error, status, message) {
+        (this.current_route || this.current_group).error.push({ error, status, message });		
 		return this;
 	}
 
@@ -54,7 +53,7 @@ export class CloudAtlas {
 		} finally {
 			for (let mw of route.group.amw) await mw(con, () => Promise.resolve());
 		}
-		return con.res();
+		return con.response();
 	}
 
 	matches(route, con) {
@@ -62,9 +61,7 @@ export class CloudAtlas {
 		
 		if (con.method !== route.method || reqParts.length !== routeParts.length) return false;
 		
-		con.params = routeParts.reduce(
-            (acc, p, i) => {if (p.startsWith(':')) acc[p.slice(1)] = reqParts[i];return p.startsWith(':') || p === reqParts[i] ? acc : null;},
-            {});
+		con.params = routeParts.reduce((acc, p, i) => {if (p.startsWith(':')) acc[p.slice(1)] = reqParts[i];return p.startsWith(':') || p === reqParts[i] ? acc : null;},{});
 		
 		return !!con.params;
 	}

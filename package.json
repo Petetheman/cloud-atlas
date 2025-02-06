@@ -1,14 +1,19 @@
 {
-  "name": "my-package",
-  "version": "1.0.0",
+  "name": "cloud-atlas",
+  "type": "module",
+  "version": "0.3.0",
   "main": "src/index.js",
   "scripts": {
     "test": "jest",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "dev": "wrangler dev"
   },
   "dependencies": {
+    "@cloudflare/workers-types": "^4.20230821.0"
   },
   "devDependencies": {
+    "wrangler": "^3.22.1",
+    "esbuild": "^0.20.0"
   }
 } 
