@@ -21,22 +21,39 @@ import { CloudAtlas, Context } from 'cloud-atlas';
 
 const app = new CloudAtlas();
 
-app.group('orders')
+app.group('/orders')
     .catchWith(OrderError, handleOrderErrors)    
     .catch(LicenseError, 403, 'You are not authorized to access this resource.');
     .catchWith(Error, logTransactionAudit);
 
     .beforeAll()
-    .ensure(validApiKeyPresent)
-    .ensure(validOrderIdFormat)
-    .ensure(userIsAuthenticated)
+        .ensure(validApiKeyPresent)
+        .ensure(validOrderIdFormat)
+        .ensure(userIsAuthenticated)
     
-    .onGET('/orders/:id')    
-    .attach(fetchUserDetails)
-    .attach(loadOrderHistory)
-    .do(verifyOrderOwnership)
-    .do(applyLoyaltyDiscount)
-    .do(formatResponseData)
+    .onGET('/:id')    
+        .attach(fetchUserDetails)
+        .attach(loadOrderHistory)
+        .do(verifyOrderOwnership)
+        .do(applyLoyaltyDiscount)
+        .do(formatResponseData)
+    
+    .onPOST('/')
+        .attach(validateOrderData)
+        .do(createOrder)
+        .then(sendOrderConfirmation)
+    
+    .onDELETE('/:id')
+        .ensure(validOrderIdFormat)
+        .do(verifyOrderOwnership)
+        .do(cancelOrder)
+        .then(sendOrderCancellation)
+    
+    .onPUT('/:id')
+        .ensure(validOrderIdFormat)
+        .do(verifyOrderOwnership)
+        .do(updateOrder)
+        .then(sendOrderUpdate)
     
 
 export default app.config();
