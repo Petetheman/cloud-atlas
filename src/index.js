@@ -23,8 +23,13 @@ export class CloudAtlas {
 		return this._set(route.group, route, route.mw);
 	}
 
+    catchAny(method) {
+        (this.current_route || this.current_group).error.push({ method});
+        return this;
+    }
+
 	catch(error, status, message) {
-        (this.current_route || this.current_group).error.push({ error, status, message });		
+        this.catchAny(async (ex, con) => {if (ex instanceof error) con.res = {...con.res, status: status, body: message, statusText: message};});
 		return this;
 	}
 
