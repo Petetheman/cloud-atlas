@@ -43,7 +43,7 @@ export class CloudAtlas {
 		return this;
 	}
 
-	async handle(req, env, ctx) {
+	async handle(con) {
 		const route = this.routes.find(r => this.matches(r, con));
 		if (!route) return new Response('Not found', { status: 404 });
 		
