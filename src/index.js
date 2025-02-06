@@ -1,4 +1,3 @@
-// Microroute is a async routing library for cloudflare workers
 export class CloudAtlas {
     constructor() {
         this.routes = [];
