@@ -28,10 +28,10 @@ app.group('/orders')
 
     .beforeAll()
         .ensure(validApiKeyPresent)
-        .ensure(validOrderIdFormat)
         .ensure(userIsAuthenticated)
     
-    .onGET('/:id')    
+    .onGET('/:id')
+        .ensure(validOrderIdFormat)
         .attach(fetchUserDetails)
         .attach(loadOrderHistory)
         .do(verifyOrderOwnership)
