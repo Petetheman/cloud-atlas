@@ -53,10 +53,10 @@ export class CloudAtlas {
 			await this.compose([...route.group.bmw, ...route.mw])(con);
 		} catch (err) {
 			const handler = [...route.error, ...route.group.error].find(h => err instanceof h.error);
-			if (!handler) throw err;
+			if (!handler) throw err
             con.res = {...con.res, status: handler.status, body: handler.message+' - '+err.message, statusText: handler.message};
 		} finally {
-			for (let mw of route.group.amw) await mw(con, () => Promise.resolve());
+            await this.compose(route.group.amw)(con);			
 		}
 		return con.response();
 	}

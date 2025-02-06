@@ -68,7 +68,6 @@ Each step in the pipeline:
 - `ensure()`: Validation guards  
 - `attach()`: Data loading/transformation  
 - `do()`: Core business logic  
-- `onError()`: Error handling
 - `catchAny()`: Error recovery
 
 
