@@ -25,13 +25,8 @@ export class CloudAtlas {
         return this;
     }
 
-    catch(error, status, message) {
-        this.catchAny(error, async (ex, con) => { if (ex instanceof error) con.res = { ...con.res, status: status, body: message, statusText: message }; });
-        return this;
-    }
-
+    catch(error, status, message) {return this.catchAny(error, async (ex, con) => {con.res = { ...con.res, status: status, body: message, statusText: message }; });}
     beforeAll() { return this.set(this.current.group, null, this.current.group.bmw) }
-
     afterAll() { return this.set(this.current.group, null, this.current.group.bmw) }
 
     use(mw) {
