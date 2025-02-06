@@ -18,7 +18,8 @@ export class CloudAtlas {
 	}
 
 	on(method, path) {
-		const route = {path: (this.current_group?.path || '') + path, method, group: this.current_group, mw: [], error: this.current_group?.error || []};
+        const group = this.current_group || this.group('');
+		const route = {path: (group.path || '') + path, method, group: group, mw: [], error: group.error || []};
 		this.routes.push(route);
 		return this._set(route.group, route, route.mw);
 	}
@@ -53,8 +54,7 @@ export class CloudAtlas {
 			await this.compose([...route.group.bmw, ...route.mw])(con);
 		} catch (err) {
 			const handler = [...route.error, ...route.group.error].find(h => err instanceof h.error);
-			if (!handler) throw err
-            await handler.method(err, con);
+			if (!handler) {throw err} else {await handler.method(err, con);}
 		} finally {
             await this.compose(route.group.amw)(con);			
 		}
