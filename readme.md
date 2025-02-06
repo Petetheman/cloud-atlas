@@ -1,5 +1,4 @@
-```
-# CloudAtlas 🌩️
+# CloudAtlas
 
 A tiny, expressive routing framework for Cloudflare Workers with middleware support and error handling.
 
