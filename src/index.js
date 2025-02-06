@@ -90,8 +90,6 @@ export class Context {
 
 	get path() { return new URL(this.req.url).pathname;}
 	get method() { return this.req.method; }
-	get body() { return this.res._body; }
-	set body(v) {this.res._body = v;}
 
 	response() {
 		this.res.headers['Content-Type'] = typeof this.res._body === 'object' ? 'application/json' : 'text/plain';
