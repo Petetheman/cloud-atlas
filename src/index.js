@@ -39,8 +39,7 @@ export class CloudAtlas {
 	afterAll() {return this._set(this.current_group, null, this.current_group.bmw)}
 
 	use(mw) {
-		if (Array.isArray(mw)) mw.forEach(m => this.use(m));
-		this.current_chain.push(mw);
+		Array.isArray(mw) ? mw.forEach(m => this.use(m)) : this.current_chain.push(mw);
 		return this;
 	}
 
