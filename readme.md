@@ -117,6 +117,12 @@ name = "your-worker-name"
 type = "javascript"
 compatibility_flags = ["nodejs_compat"]
 main = "src/index.js"
+
+[observability]
+enabled = true
+
+[vars]
+ENVIRONMENT = "production"
 ```
 
 2. Export the `app.config()` function as the default export.

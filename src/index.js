@@ -33,7 +33,7 @@ export class CloudAtlas {
     catch(error, status, message) {return this.catchAny(error, async (ex, con) => {con.res = { ...con.res, status: status, body: message, statusText: message }; });}
     beforeAll() { return this.set(this.current.group, null, this.current.group.bmw) }
     afterAll() { return this.set(this.current.group, null, this.current.group.amw) }
-    config() { return { fetch: async (req, env, ctx) => { return this.handle(new Context(req, env, ctx)) } }; }
+    config() { return { fetch: async (req, env, ctx) => { return this.handle(new Context(req, env, ctx, this)) } }; }
     
 
     async handle(con) {
@@ -41,7 +41,7 @@ export class CloudAtlas {
         if (!route) return new Response('Not found', { status: 404 });
         try {await this.compose([...route.group.bmw, ...route.mw])(con);} 
         catch (err) {
-            let handler = [...route.error, ...route.group.error].find(h => err instanceof h.error) 
+            const handler = [...route.error, ...route.group.error].find(h => err instanceof h.error) 
             handler ? await handler.method(err, con) : (() => { throw err; })()
         } 
         finally {await this.compose(route.group.amw)(con)}
@@ -59,10 +59,11 @@ export class CloudAtlas {
 ['use', 'then', 'where', 'when', 'do', 'and', 'or', 'include', 'require', 'ensure', 'attach'].forEach(alias => CloudAtlas.prototype[alias] = CloudAtlas.prototype.use);
 
 export class Context {
-    constructor(req, env, ctx) {
+    constructor(req, env, ctx, app) {
         this.req = req;
         this.env = env;
         this.ctx = ctx;
+        this.app = app;
         this.params = {};
         this.res = { body: {}, status: 200, statusText: 'OK', headers: { "Content-Type": "application/json" } };
     }
