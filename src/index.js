@@ -49,7 +49,7 @@ export class CloudAtlas {
     }
 
     compose(middlewares) {return async (ctx) => { 
-        dispatch = async (index) => { index < middlewares.length ? await middlewares[index](ctx, () => dispatch(index + 1)) : Promise.resolve() }
+        const dispatch = async (index) => { index < middlewares.length ? await middlewares[index](ctx, () => dispatch(index + 1)) : Promise.resolve() }
         await dispatch(0)
     }}
     
